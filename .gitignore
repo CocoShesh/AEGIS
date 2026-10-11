@@ -1,0 +1,28 @@
+.data/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.playwright-cli/
+output/
+
+# Local databases, scan artifacts, and test APKs
+*.sqlite
+*.sqlite3
+*.db
+*.apk
+*.xapk
+*.apks
+*.log
+
+.env
+.env.*
+!.env.example
+
+# Google credentials belong outside the repository
+service-account.json
+credentials.json
+*.key.json
+dynamic-config.json
+.pytest_cache/

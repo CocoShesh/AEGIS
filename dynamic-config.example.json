@@ -1,0 +1,15 @@
+{
+  "dynamic": {
+    "enabled": false,
+    "provider": "firebase_test_lab",
+    "firebase_test_lab": {
+      "project_id": null,
+      "device": {"model": null, "version": null, "locale": "en", "orientation": "portrait"},
+      "timeout_seconds": 300,
+      "job_timeout_seconds": 900,
+      "no_auto_google_login": true,
+      "collect": {"logs": true, "screenshots": true, "video": true},
+      "retain_remote_results": true
+    }
+  }
+}
