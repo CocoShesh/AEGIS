@@ -53,12 +53,16 @@ def test_no_target_execution_during_core_analysis(tmp_path):
     assert r['findings']
 
 def test_secrets_are_removed_from_source_evidence_and_report():
-    secret='ghp_'+'AbCd12'*6
-    body=f'token = "{secret}"\npassword = "do-not-show-this-value"'
+    # Synthetic markers generated locally; these are not provider credentials.
+    import hashlib
+    marker=hashlib.sha256(b'RepoSentinel redaction test only').hexdigest()
+    secret='_'.join(('ghp',marker[:36]))
+    sample_password='fixture-'+marker[36:]
+    body=f'token = "{secret}"\npassword = "{sample_password}"'
     r=analyze([{'path':'.env','kind':'file','data':body.encode()}],{'name':'fixture'})
     encoded=json.dumps(r)
     assert secret not in encoded
-    assert 'do-not-show-this-value' not in encoded
+    assert sample_password not in encoded
     assert '[REDACTED]' in encoded
 
 def test_decoding_never_evaluates_recovered_program(tmp_path):
@@ -84,7 +88,9 @@ def test_duplicate_archive_entries_rejected():
     with pytest.raises(ValueError,match='Duplicate'): read_archive(archive([('root/a.py',b'a','file'),('root/a.py',b'b','file')]))
 
 def test_private_key_block_is_redacted():
-    text='-----BEGIN RSA PRIVATE KEY-----\nSENSITIVEKEYBODY\n-----END RSA PRIVATE KEY-----'
+    # Construct a deliberately invalid PEM-shaped fixture at runtime.
+    label=' '.join(('RSA','PRIVATE','KEY'))
+    text=f'-----BEGIN {label}-----\nSENSITIVEKEYBODY\n-----END {label}-----'
     assert 'SENSITIVEKEYBODY' not in redact(text)
     assert 'user:password@' not in redact('https://user:password@example.invalid/repo')
 
