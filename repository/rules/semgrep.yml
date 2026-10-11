@@ -1,0 +1,18 @@
+rules:
+  - id: rs-python-shell
+    languages: [python]
+    message: Shell execution enabled; review command input provenance.
+    severity: WARNING
+    pattern: subprocess.$FUNC(..., shell=True, ...)
+  - id: rs-python-exec
+    languages: [python]
+    message: Dynamic code execution requires human review.
+    severity: ERROR
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: exec(...)
+  - id: rs-js-exec
+    languages: [javascript, typescript]
+    message: Dynamic JavaScript evaluation requires human review.
+    severity: ERROR
+    pattern: eval(...)

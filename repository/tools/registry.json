@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "admitted": [
+    {
+      "id": "semgrep",
+      "pinned_version": "1.180.0",
+      "static_only": true,
+      "network_class": "OFFLINE",
+      "owned_config": "rules/semgrep.yml",
+      "machine_output": "json",
+      "target_config_disabled": true,
+      "hosted_license_reviewed": false
+    },
+    {
+      "id": "bandit",
+      "pinned_version": "1.9.4",
+      "static_only": true,
+      "network_class": "OFFLINE",
+      "owned_config": "rules/bandit.yml",
+      "machine_output": "json",
+      "target_config_disabled": true,
+      "hosted_license_reviewed": false
+    },
+    {
+      "id": "trivy",
+      "pinned_version": "0.75.0",
+      "static_only": true,
+      "network_class": "OFFLINE",
+      "machine_output": "json",
+      "target_config_disabled": true,
+      "hosted_license_reviewed": false
+    },
+    {
+      "id": "osv-scanner",
+      "pinned_version": "2.6.0",
+      "static_only": true,
+      "network_class": "METADATA_ONLY",
+      "machine_output": "json",
+      "target_config_disabled": true,
+      "hosted_license_reviewed": false
+    },
+    {
+      "id": "gitleaks",
+      "pinned_version": "8.30.1",
+      "static_only": true,
+      "network_class": "OFFLINE",
+      "machine_output": "json",
+      "target_config_disabled": true,
+      "hosted_license_reviewed": false
+    },
+    {
+      "id": "syft",
+      "pinned_version": "1.54.1",
+      "static_only": true,
+      "network_class": "OFFLINE",
+      "machine_output": "json",
+      "target_config_disabled": true,
+      "hosted_license_reviewed": false
+    },
+    {
+      "id": "grype",
+      "pinned_version": "0.120.1",
+      "static_only": true,
+      "network_class": "OFFLINE",
+      "machine_output": "json",
+      "target_config_disabled": true,
+      "hosted_license_reviewed": false
+    },
+    {
+      "id": "zizmor",
+      "pinned_version": "1.30.1",
+      "static_only": true,
+      "network_class": "OFFLINE",
+      "machine_output": "sarif",
+      "target_config_disabled": true,
+      "hosted_license_reviewed": false
+    },
+    {
+      "id": "yara-x",
+      "pinned_version": "1.21.0",
+      "static_only": true,
+      "network_class": "OFFLINE",
+      "machine_output": "json",
+      "target_config_disabled": true,
+      "hosted_license_reviewed": false
+    }
+  ],
+  "planned": [],
+  "deployment_scope": "local only; hosted distribution requires separate license review"
+}

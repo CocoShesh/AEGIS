@@ -1,0 +1,2 @@
+# Application-owned policy; target .bandit files are not consulted from this cwd.
+exclude_dirs: []

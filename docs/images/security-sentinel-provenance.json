@@ -1,0 +1,11 @@
+{
+  "type": "local-browser-screenshots",
+  "date": "2026-10-11",
+  "source_url": "http://127.0.0.1:8797",
+  "screenshots": {
+    "aegis-hub.png": "AEGIS landing with synthetic example",
+    "security-sentinel-android.png": "Android upload landing; history count only",
+    "security-sentinel-repository.png": "Synthetic local repository fixture"
+  },
+  "raster_role": "documentation only; interface uses authored SVG"
+}

@@ -26,3 +26,17 @@ credentials.json
 *.key.json
 dynamic-config.json
 .pytest_cache/
+
+.venv/
+node_modules/
+*.tsbuildinfo
+
+.venv
+
+# Downloaded local scanner binaries and advisory databases
+repository/.tools/
+repository/.scanner-cache/
+
+# Ignore dependency symlinks as well as directories
+node_modules
+.impeccable/
