@@ -1,4 +1,4 @@
-"""AEGIS: one local origin, two evidence workspaces."""
+"""AEGIS: one local origin, four evidence workspaces."""
 import argparse
 import asyncio
 from contextlib import asynccontextmanager
@@ -74,6 +74,11 @@ async def local_boundary(request: Request, call_next):
 app.mount('/landing', StaticFiles(directory=ROOT/'landing'), name='landing-assets')
 app.mount('/shared', StaticFiles(directory=ROOT/'shared'), name='shared-assets')
 
+from filesentinel.api import app as filesentinel_app
+filesentinel_app.state.ai_bridge = repository_ai
+
+app.mount('/file', filesentinel_app, name='filesentinel')
+
 @app.get('/')
 def landing():
     return FileResponse(ROOT/'landing/index.html', headers={'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"})
@@ -85,6 +90,10 @@ def android_redirect():
 @app.get('/repository')
 def repository_redirect():
     return RedirectResponse('/repository/', status_code=307)
+
+@app.get('/file')
+def filesentinel_redirect():
+    return RedirectResponse('/file/', status_code=307)
 
 app.mount('/repository', repository_app)
 

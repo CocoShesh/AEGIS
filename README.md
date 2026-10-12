@@ -2,19 +2,20 @@
 
 **Android Evidence & Git Inspection System**
 
-A local security evidence workbench for Android packages and source repositories. AEGIS brings the landing hub, APKTrust and RepoSentinel together in **one repository and one local application**. Start at the hub, choose an investigation, and review findings, coverage and AI assessments before deciding what to trust.
+A local security evidence workbench for Android packages, source repositories and files. AEGIS brings the landing hub, APKTrust, RepoSentinel and FileSentinel together in **one repository and one local application**. Start at the hub, choose an investigation, and review findings, coverage and AI assessments before deciding what to trust.
 
 ![AEGIS landing hub with APKTrust and RepoSentinel entry points](docs/images/aegis-hub.png)
 
-[Quick start](#quick-start) · [Modules](#three-surfaces-one-repository) · [AI and privacy](#ai-and-data-sharing) · [Development](#development) · [Limits](#limits)
+[Quick start](#quick-start) · [Modules](#four-surfaces-one-repository) · [AI and privacy](#ai-and-data-sharing) · [Development](#development) · [Limits](#limits)
 
-## Three surfaces, one repository
+## Four surfaces, one repository
 
 | Surface | Route | Purpose | Guide |
 |---|---|---|---|
-| **AEGIS hub** | `/` | Project introduction, capabilities and access to both workspaces | [Landing page](landing/README.md) |
+| **AEGIS hub** | `/` | Project introduction, capabilities and access to all three workspaces | [Landing page](landing/README.md) |
 | **APKTrust** | `/android/` | APK, XAPK and APKS investigations with static evidence, reputation integrations and optional cloud analysis | [Android module](web/README.md) |
 | **RepoSentinel** | `/repository/` | GitHub/source snapshot analysis, scanner provenance, AI assessment, file review and exports | [Repository module](repository/README.md) |
+| **FileSentinel** | `/file/` | Local file identity, hashes and bounded format metadata with explicit limits | [File module](filesentinel/README.md) |
 
 The hub is the default front page. Modules retain their own names, reports and histories. There is no separate landing-page repository or repository-analysis repository.
 
@@ -22,11 +23,14 @@ The hub is the default front page. Modules retain their own names, reports and h
 flowchart TD
     A[AEGIS local hub] --> B[APKTrust Android workspace]
     A --> C[RepoSentinel repository workspace]
+    A --> H[FileSentinel file workspace]
     B --> D[Android evidence and local history]
     C --> E[Static engines and coverage]
     E --> F[Shared AI assessment and bounded text review]
     E --> G[Repository evidence and local history]
     F --> G
+    H --> I[File hashes and bounded metadata]
+    H --> F
 ```
 
 ## Quick start
@@ -49,7 +53,7 @@ python3 -m venv .venv
 ./start.sh
 ```
 
-Open **http://127.0.0.1:8797/**. Direct links: [APKTrust](http://127.0.0.1:8797/android/) and [RepoSentinel](http://127.0.0.1:8797/repository/).
+Open **http://127.0.0.1:8797/**. Direct links: [APKTrust](http://127.0.0.1:8797/android/), [RepoSentinel](http://127.0.0.1:8797/repository/) and [FileSentinel](http://127.0.0.1:8797/file/).
 
 Static analysis works without AI keys. Missing engines or databases are reported as coverage gaps; they do not produce a clean verdict.
 
@@ -95,6 +99,10 @@ The workbench includes files/findings/source evidence, dependency inventory, rel
 
 Save review dispositions, export JSON/HTML/SARIF/CycloneDX, or remove a finished scan from Scan history. Removal deletes its retained report, review notes and AI explanation. Active scans cannot be removed.
 
+### FileSentinel
+
+Upload one file (up to 64 MiB) for local hash and bounded header inspection. The initial release identifies common PE, ELF, Mach-O, ZIP and PDF formats; it does not execute, load or install target files. Raw input is deleted after analysis. The report retains the display name, hashes, limited structure metadata and explicit coverage gaps. When configured, shared APKTrust AI providers automatically receive a bounded metadata summary only—never file bytes, original name, local path, archive member names or file strings. AI remains commentary, not a malware verdict. Linux hosts that block user namespaces report `PROCESS_LIMITED`; no sandbox guarantee is claimed in that mode.
+
 ## AI and data sharing
 
 Copy the empty example and configure only the providers you intend to use:
@@ -105,13 +113,15 @@ cp .env.example .env
 
 | Service | Configuration | Sharing |
 |---|---|---|
-| Groq / OpenRouter / Gemini | API key and model entries in `.env` | Shared AI configuration for both modules |
+| Groq / OpenRouter / Gemini | API key and model entries in `.env` | Shared AI configuration for RepoSentinel and FileSentinel |
 | VirusTotal / URLhaus | Their key entries in `.env` | Optional Android reputation requests |
 | Firebase Test Lab | Explicit Android dynamic configuration | APK upload/cloud execution only with consent |
 
-Never commit `.env` or service-account credentials. The repository includes an empty configuration example, not working keys. RepoSentinel uses ordered AI fallback: Groq → OpenRouter → Gemini.
+Never commit `.env` or service-account credentials. The repository includes an empty configuration example, not working keys. RepoSentinel and FileSentinel use the shared APKTrust provider bridge and ordered AI fallback: Groq → OpenRouter → Gemini.
 
 **Starting a RepoSentinel scan authorizes automatic AI review.** Outbound AI evidence includes bounded findings/coverage summaries and redacted unsupported text content. Repository identity and file paths are excluded, but file content can include embedded URLs and other sensitive text; redaction is best effort. Text review is limited to 24 objects, 8,000 characters per object and 48,000 characters total per scan. A failed AI assessment can be retried from the AI panel.
+
+FileSentinel automatically requests an AI assessment when a provider is configured. It sends only bounded format metadata and numeric/boolean structure indicators. It never sends the uploaded bytes, display name, local path, archive member names or file strings.
 
 GitHub intake contacts GitHub. OSV sends dependency metadata for advisory lookup. Trivy/Grype scans use local advisory databases; updates download public data. The other integrated engines run offline under the configured static policy. See [engine data flow](repository/docs-engines.md).
 
@@ -119,9 +129,10 @@ Android and repository sharing policies differ; read the module guides before en
 
 ## Local storage and architecture
 
-- `sentinel.py` serves the hub and both workspaces on loopback port 8797, mounts RepoSentinel and supervises a private loopback Android server.
+- `sentinel.py` serves the hub and three workspaces on loopback port 8797, mounts FileSentinel and RepoSentinel, and supervises a private loopback Android server.
 - Android history: `.data/scans.sqlite3`.
 - Repository history, reviews and separate AI commentary: `.data/repositories/scans.sqlite`.
+- FileSentinel report history: `.data/filesentinel/scans.sqlite`; raw upload bytes are temporary and removed after analysis.
 - External tools: `repository/.tools/`; advisory databases: `repository/.scanner-cache/`.
 - Credentials, retained history, caches, uploaded packages, virtual environments and `node_modules` are ignored by Git.
 
@@ -151,6 +162,7 @@ web/                    APKTrust frontend and module README
 server.py               APKTrust backend
 apktrust                Android CLI
 repository/             RepoSentinel backend, React UI, rules and tools
+filesentinel/           FileSentinel local metadata worker, API and UI
 repository_ai.py        Shared repository AI bridge
 shared/                 Theme, icons and bundled font/license
 integration_tests/      Gateway and shared-AI verification
@@ -159,7 +171,7 @@ docs/                   Detailed module guides and architecture notes
 
 ## Limits
 
-This is a local analysis release, not a hosted multi-user service. Repository target code is never executed: no target builds, installs, hooks or tests. Repository uploads are bounded to 80 MB, 12,000 objects and 1 MB inspected regular files. Nested archives, binary capabilities, LFS/submodule content and runtime behavior remain limited or unresolved.
+This is a local analysis release, not a hosted multi-user service. Repository target code and FileSentinel file targets are never executed: no target builds, installs, hooks, imports or tests. Repository uploads are bounded to 80 MB, 12,000 objects and 1 MB inspected regular files. FileSentinel is an initial metadata-only release; deep reverse engineering, YARA/capa/FLOSS, reputation, emulation, recursive extraction and disposable VM analysis remain unavailable.
 
 AI assessments and confidence are opinions based on supplied evidence, not calibrated safety probabilities. AI cannot turn missing coverage into verified inspection. Absence of scanner findings is not proof that a repository or Android package is safe. Routine CSS/SVG filtering before AI review remains unimplemented; readable unsupported text is currently reviewed under the stated budgets.
 

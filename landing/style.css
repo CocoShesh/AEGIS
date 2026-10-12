@@ -18,3 +18,10 @@ body.intro-active{overflow:hidden}
 @keyframes intro-reveal{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:520px){.intro button{top:20px;right:24px}.intro-bottom{left:24px;right:24px;bottom:26px}.intro-percent{right:24px;bottom:112px}.intro-word{font-size:16vw}.intro p{letter-spacing:.04em;max-width:280px;line-height:1.8}.intro-status{letter-spacing:.02em;gap:20px}.intro-status>span:last-child{max-width:125px;text-align:right}}
 @media(prefers-reduced-motion:reduce){.intro,.intro-word,.intro p{animation:none;transition:none}.intro.leaving{transform:none}}
+/* The three workspaces share the same AEGIS palette and responsive card rhythm. */
+.entry{flex:1;min-width:0;max-width:390px}
+.workspace-actions{width:min(100%,1120px);margin-left:auto;margin-right:auto}
+.tertiary{border:1px solid #567199;background:#172f59;color:#f1f5fc}
+.tertiary:hover{background:#234472}
+.tertiary>svg:first-child{color:#bcd1f3}
+@media(max-width:520px){.entry{max-width:none}}

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#172f59"><meta name="description" content="Local-first file and binary triage with explicit evidence and analysis limits.">
+  <title>FileSentinel · AEGIS</title><link rel="icon" href="/shared/filesentinel.svg"><link rel="stylesheet" href="./style.css">
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="AEGIS home"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 3 5 11v14c0 11 19 20 19 20s19-9 19-20V11L24 3Z"/><path d="m16 24 5 5 11-12"/></svg><span>AEGIS</span></a>
+    <div class="suite"><span class="eyebrow">ARTIFACT ANALYSIS</span><h1>FileSentinel</h1><p>File &amp; binary investigation</p></div>
+    <a class="back-link" href="/">← All workspaces</a>
+    <div class="history-head"><span class="eyebrow">RECENT SCANS</span><button id="refresh-history" class="icon-button" aria-label="Refresh scan history" title="Refresh">↻</button></div>
+    <nav id="history" class="history" aria-label="Recent scans"><p class="quiet">No scans yet. Add a file to begin.</p></nav>
+    <div class="sidebar-foot"><span class="live-dot"></span><span>Local workspace</span><span class="version">v0.1</span></div>
+  </aside>
+  <main id="main" class="main">
+    <header class="topbar"><div><span class="eyebrow">AEGIS / FILESENTINEL</span><p>Static evidence · explicit limits · human review</p></div><div class="topbar-status"><span class="local-chip"><span class="live-dot"></span>LOCAL ONLY</span><span id="ai-chip" class="local-chip">AI · CHECKING</span></div></header>
+    <section class="intro"><div><span class="eyebrow">FILE &amp; BINARY TRIAGE</span><h2>Start with the artifact.<br><span>Follow the evidence.</span></h2><p>Inspect a file’s identity and basic structure. Target files are never run, loaded, or installed.</p></div><a class="text-link" href="#coverage">What is and isn’t analyzed ↓</a></section>
+    <section class="upload card" aria-labelledby="upload-title">
+      <div class="section-title"><div><span class="eyebrow">NEW INVESTIGATION</span><h3 id="upload-title">Choose a file</h3></div><span class="limit">Up to 64 MiB</span></div>
+      <label id="dropzone" class="dropzone" for="file-input" tabindex="0">
+        <span class="upload-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L7 9m5-5 5 5M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></svg></span>
+        <span class="drop-title">Drop a file here or <strong>browse</strong></span><span class="drop-subtitle">One file per investigation · no automatic third-party sample uploads</span>
+        <input id="file-input" type="file" aria-label="Choose a file to inspect">
+      </label>
+      <p id="form-error" class="form-error" role="alert" hidden></p>
+      <div class="privacy-note"><span aria-hidden="true">◈</span><p><strong>Private by default.</strong> The raw file is held temporarily for local analysis, then deleted. Only the report is retained. If AI is configured, it receives bounded metadata and structure flags—not the file bytes or original name.</p></div>
+    </section>
+    <section id="results" class="results" hidden aria-live="polite"></section>
+    <section id="coverage" class="coverage card">
+      <div class="section-title"><div><span class="eyebrow">CURRENT RELEASE</span><h3>Analysis coverage</h3></div><span class="partial-chip">PARTIAL BY DESIGN</span></div>
+      <p class="coverage-lead">FileSentinel v0.1 records hashes and a small set of format headers. It does not claim that a file is safe or malicious.</p>
+      <div class="engine-grid"><div><span class="engine-state available">AVAILABLE</span><strong>Metadata worker</strong><small>SHA-256 / SHA-1 / MD5 · PE, ELF, Mach-O, ZIP, PDF and basic text identification</small></div><div><span class="engine-state gap">NOT INTEGRATED</span><strong>Deep static engines</strong><small>Detect It Easy, LIEF, YARA-X, capa, FLOSS, disassembly and decompilation</small></div><div><span class="engine-state gap">NOT INTEGRATED</span><strong>Emulation &amp; sandbox</strong><small>No target execution. Speakeasy and disposable VM analysis are future work.</small></div></div>
+      <div class="safety-note"><span class="safety-mark">!</span><p><strong>Host isolation status is explicit.</strong> If this machine blocks Linux user namespaces, a scan uses process limits only and reports <code>PROCESS_LIMITED</code>. That mode does not guarantee network or host-file isolation.</p></div>
+    </section>
+    <footer><a href="/">AEGIS</a><span>Evidence before trust.</span><span>FileSentinel · local analysis</span></footer>
+  </main>
+</body>
+</html>
